@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
+#include "CryptoLog.h"
 #include "FileUtils.h"
 #include "polarssl/xtea.h"
 
@@ -14,15 +15,15 @@ using namespace std;
 /* 16 bytes == 128 bits */
 #define XTEA_KEY_SIZE  16
 
-class CryptoLog_XTEA_CBC {
+class CryptoLog_XTEA_CBC : public CryptoLog {
   public:
     CryptoLog_XTEA_CBC();
     CryptoLog_XTEA_CBC(const string &filename);
     ~CryptoLog_XTEA_CBC();
-    void open(const string &filename);
+    virtual void open(const string &filename);
     void set_key(const unsigned char key[XTEA_KEY_SIZE]);
-    void write(const string &str);
-    string get_plain_text();
+    virtual void write(const string &str);
+    virtual string get_plain_text();
   private:
     xtea_context ctx;
     string filename;

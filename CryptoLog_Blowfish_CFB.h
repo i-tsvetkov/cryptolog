@@ -4,20 +4,21 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
+#include "CryptoLog.h"
 #include "FileUtils.h"
 #include "polarssl/blowfish.h"
 
 using namespace std;
 
-class CryptoLog_Blowfish_CFB {
+class CryptoLog_Blowfish_CFB : public CryptoLog {
   public:
     CryptoLog_Blowfish_CFB();
     CryptoLog_Blowfish_CFB(const string &filename);
     ~CryptoLog_Blowfish_CFB();
-    void open(const string &filename);
+    virtual void open(const string &filename);
     void set_key(const unsigned char key[], unsigned int keylen);
-    void write(const string &str);
-    string get_plain_text();
+    virtual void write(const string &str);
+    virtual string get_plain_text();
   private:
     blowfish_context ctx;
     string filename;
