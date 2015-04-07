@@ -7,6 +7,24 @@ cryptographic ciphers
   * Blowfish / CBC
   * Blowfish / CFB
 
+## API
+```c++
+// constructor that opens / creates a log file for writing
+CryptoLog(const string &filename);
+
+// opens / creates a log file; closing is automatic
+virtual void open(const string &filename);
+
+// sets the encryption key and its length
+void set_key(const unsigned char key[], unsigned int keylen);
+
+// writes string to the file
+virtual void write(const string &str);
+
+// returns the decrypted file content
+virtual string get_plain_text(void);
+```
+
 ## Example of the API
 ```c++
 /* it is not a good idea to hard code the key like that! */
