@@ -23,6 +23,7 @@ class CryptoLog_XTEA_CBC : public CryptoLog {
     virtual void open(const string &filename);
     void set_key(const unsigned char key[XTEA_KEY_SIZE]);
     virtual void write(const string &str);
+    virtual string read();
     virtual string get_plain_text();
   private:
     xtea_context ctx;
@@ -138,5 +139,10 @@ string CryptoLog_XTEA_CBC::get_plain_text()
   free(out_buff);
 
   return plaintext;
+}
+
+string CryptoLog_XTEA_CBC::read()
+{
+  return this->get_plain_text();
 }
 

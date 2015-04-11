@@ -18,6 +18,7 @@ class CryptoLog_Blowfish_CBC : public CryptoLog {
     virtual void open(const string &filename);
     void set_key(const unsigned char key[], unsigned int keylen);
     virtual void write(const string &str);
+    virtual string read();
     virtual string get_plain_text();
   private:
     blowfish_context ctx;
@@ -136,4 +137,9 @@ string CryptoLog_Blowfish_CBC::get_plain_text()
   free(out_buff);
 
   return plaintext;
+}
+
+string CryptoLog_Blowfish_CBC::read()
+{
+  return this->get_plain_text();
 }
