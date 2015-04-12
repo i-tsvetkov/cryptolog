@@ -21,6 +21,9 @@ void set_key(const unsigned char key[], unsigned int keylen);
 // writes string to the file
 virtual void write(const string &str);
 
+// alias of get_plain_text()
+virtual string read();
+
 // returns the decrypted file content
 virtual string get_plain_text(void);
 ```
