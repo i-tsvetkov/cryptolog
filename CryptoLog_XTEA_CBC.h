@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "CryptoLog.h"
 #include "FileUtils.h"
+#include "Random.h"
 #include "polarssl/xtea.h"
 
 using namespace std;
@@ -68,10 +69,7 @@ void CryptoLog_XTEA_CBC::init_iv()
     if (fp == NULL)
       throw runtime_error("Could not open file: " + filename);
 
-    srand(time(NULL));
-
-    for(int i = 0; i < XTEA_BLOCK_SIZE; i++)
-      iv[i] = (unsigned char) rand();
+    random_data(iv, XTEA_BLOCK_SIZE);
 
     fwrite(iv, sizeof(unsigned char), XTEA_BLOCK_SIZE, fp);
     fclose(fp);

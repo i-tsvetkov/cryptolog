@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "CryptoLog.h"
 #include "FileUtils.h"
+#include "Random.h"
 #include "polarssl/blowfish.h"
 
 using namespace std;
@@ -69,10 +70,7 @@ void CryptoLog_Blowfish_CBC::init_iv()
     if (fp == NULL)
       throw runtime_error("Could not open file: " + filename);
 
-    srand(time(NULL));
-
-    for(int i = 0; i < BLOWFISH_BLOCKSIZE; i++)
-      iv[i] = (unsigned char) rand();
+    random_data(iv, BLOWFISH_BLOCKSIZE);
 
     fwrite(iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
     fclose(fp);
