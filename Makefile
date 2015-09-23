@@ -1,18 +1,18 @@
-CC  ?= gcc
-CPPC = g++
-CPPFLAGS += -Wall -Wno-sign-compare -I./polarssl/include
+CC ?= gcc
+CXX = g++
+CXXFLAGS += -Wall -Wno-sign-compare -I./polarssl/include
 
 all: main
 
 main: xtea.o blowfish.o
-	$(CPPC) $(CPPFLAGS) xtea.o blowfish.o main.cpp -o main
+	$(CXX) $(CXXFLAGS) xtea.o blowfish.o main.cpp -o main
 
 blowfish.o: blowfish.c
-	$(CC) $(CPPFLAGS) -c blowfish.c
+	$(CC) $(CXXFLAGS) -c blowfish.c
 
 xtea.o: xtea.c
-	$(CC) $(CPPFLAGS) -c xtea.c
+	$(CC) $(CXXFLAGS) -c xtea.c
 
-clear:
+clean:
 	rm -f xtea.o blowfish.o main
 
