@@ -11,42 +11,44 @@
 
 using namespace std;
 
-class CryptoLog_Blowfish_CBC : public CryptoLog {
-  public:
-    CryptoLog_Blowfish_CBC();
-    CryptoLog_Blowfish_CBC(const string &filename);
-    ~CryptoLog_Blowfish_CBC();
-    virtual void open(const string &filename);
-    void set_key(const unsigned char key[], unsigned int keylen);
-    virtual void write(const string &str);
-    virtual string read();
-    virtual string get_plain_text();
-  private:
-    blowfish_context ctx;
-    string filename;
-    unsigned char iv[BLOWFISH_BLOCKSIZE];
-    void init_iv();
-    FILE *fp;
-};
+namespace CryptoLog {
+  class Blowfish_CBC : public CryptoLog {
+    public:
+      Blowfish_CBC();
+      Blowfish_CBC(const string &filename);
+      ~Blowfish_CBC();
+      virtual void open(const string &filename);
+      void set_key(const unsigned char key[], unsigned int keylen);
+      virtual void write(const string &str);
+      virtual string read();
+      virtual string get_plain_text();
+    private:
+      blowfish_context ctx;
+      string filename;
+      unsigned char iv[BLOWFISH_BLOCKSIZE];
+      void init_iv();
+      FILE *fp;
+  };
+}
 
-CryptoLog_Blowfish_CBC::CryptoLog_Blowfish_CBC()
+CryptoLog::Blowfish_CBC::Blowfish_CBC()
 {
   blowfish_init(&ctx);
 }
 
-CryptoLog_Blowfish_CBC::CryptoLog_Blowfish_CBC(const string &filename)
+CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename)
 {
   blowfish_init(&ctx);
   this->open(filename);
 }
 
-CryptoLog_Blowfish_CBC::~CryptoLog_Blowfish_CBC()
+CryptoLog::Blowfish_CBC::~Blowfish_CBC()
 {
   blowfish_free(&ctx);
   fclose(fp);
 }
 
-void CryptoLog_Blowfish_CBC::open(const string &filename)
+void CryptoLog::Blowfish_CBC::open(const string &filename)
 {
   this->filename = filename;
   init_iv();
@@ -56,7 +58,7 @@ void CryptoLog_Blowfish_CBC::open(const string &filename)
     throw runtime_error("Could not open file: " + filename);
 }
 
-void CryptoLog_Blowfish_CBC::init_iv()
+void CryptoLog::Blowfish_CBC::init_iv()
 {
   if (file_exist(filename))
   {
@@ -83,7 +85,7 @@ void CryptoLog_Blowfish_CBC::init_iv()
   }
 }
 
-void CryptoLog_Blowfish_CBC::set_key(const unsigned char key[], unsigned int keylen)
+void CryptoLog::Blowfish_CBC::set_key(const unsigned char key[], unsigned int keylen)
 {
   if (keylen >= BLOWFISH_MIN_KEY && keylen <= BLOWFISH_MAX_KEY)
     blowfish_setkey(&ctx, key, keylen);
@@ -91,7 +93,7 @@ void CryptoLog_Blowfish_CBC::set_key(const unsigned char key[], unsigned int key
     throw runtime_error("Invalid key length");
 }
 
-void CryptoLog_Blowfish_CBC::write(const string &str)
+void CryptoLog::Blowfish_CBC::write(const string &str)
 {
   unsigned char *in_buff, *out_buff;
   size_t buff_size = BLOWFISH_BLOCKSIZE * ceil((str.size() + 1.0) / BLOWFISH_BLOCKSIZE);
@@ -109,7 +111,7 @@ void CryptoLog_Blowfish_CBC::write(const string &str)
   free(out_buff);
 }
 
-string CryptoLog_Blowfish_CBC::get_plain_text()
+string CryptoLog::Blowfish_CBC::get_plain_text()
 {
   fflush(fp);
 
@@ -136,7 +138,7 @@ string CryptoLog_Blowfish_CBC::get_plain_text()
   return plaintext;
 }
 
-string CryptoLog_Blowfish_CBC::read()
+string CryptoLog::Blowfish_CBC::read()
 {
   return this->get_plain_text();
 }

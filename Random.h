@@ -5,7 +5,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-void random_data(unsigned char *data, int len)
+namespace CryptoLog {
+  void random_data(unsigned char *data, int len);
+}
+
+void CryptoLog::random_data(unsigned char *data, int len)
 {
 #if _WIN32
   unsigned char rand_num;

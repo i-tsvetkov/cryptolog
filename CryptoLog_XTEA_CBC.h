@@ -16,42 +16,44 @@ using namespace std;
 /* 16 bytes == 128 bits */
 #define XTEA_KEY_SIZE  16
 
-class CryptoLog_XTEA_CBC : public CryptoLog {
-  public:
-    CryptoLog_XTEA_CBC();
-    CryptoLog_XTEA_CBC(const string &filename);
-    ~CryptoLog_XTEA_CBC();
-    virtual void open(const string &filename);
-    void set_key(const unsigned char key[XTEA_KEY_SIZE]);
-    virtual void write(const string &str);
-    virtual string read();
-    virtual string get_plain_text();
-  private:
-    xtea_context ctx;
-    string filename;
-    unsigned char iv[XTEA_BLOCK_SIZE];
-    void init_iv();
-    FILE *fp;
-};
+namespace CryptoLog {
+  class XTEA_CBC : public CryptoLog {
+    public:
+      XTEA_CBC();
+      XTEA_CBC(const string &filename);
+      ~XTEA_CBC();
+      virtual void open(const string &filename);
+      void set_key(const unsigned char key[XTEA_KEY_SIZE]);
+      virtual void write(const string &str);
+      virtual string read();
+      virtual string get_plain_text();
+    private:
+      xtea_context ctx;
+      string filename;
+      unsigned char iv[XTEA_BLOCK_SIZE];
+      void init_iv();
+      FILE *fp;
+  };
+}
 
-CryptoLog_XTEA_CBC::CryptoLog_XTEA_CBC()
+CryptoLog::XTEA_CBC::XTEA_CBC()
 {
   xtea_init(&ctx);
 }
 
-CryptoLog_XTEA_CBC::CryptoLog_XTEA_CBC(const string &filename)
+CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename)
 {
   xtea_init(&ctx);
   this->open(filename);
 }
 
-CryptoLog_XTEA_CBC::~CryptoLog_XTEA_CBC()
+CryptoLog::XTEA_CBC::~XTEA_CBC()
 {
   xtea_free(&ctx);
   fclose(fp);
 }
 
-void CryptoLog_XTEA_CBC::init_iv()
+void CryptoLog::XTEA_CBC::init_iv()
 {
   if (file_exist(filename))
   {
@@ -78,7 +80,7 @@ void CryptoLog_XTEA_CBC::init_iv()
   }
 }
 
-void CryptoLog_XTEA_CBC::open(const string &filename)
+void CryptoLog::XTEA_CBC::open(const string &filename)
 {
   this->filename = filename;
   init_iv();
@@ -88,12 +90,12 @@ void CryptoLog_XTEA_CBC::open(const string &filename)
     throw runtime_error("Could not open file: " + filename);
 }
 
-void CryptoLog_XTEA_CBC::set_key(const unsigned char key[XTEA_KEY_SIZE])
+void CryptoLog::XTEA_CBC::set_key(const unsigned char key[XTEA_KEY_SIZE])
 {
   xtea_setup(&ctx, key);
 }
 
-void CryptoLog_XTEA_CBC::write(const string &str)
+void CryptoLog::XTEA_CBC::write(const string &str)
 {
   unsigned char *in_buff, *out_buff;
   size_t buff_size = XTEA_BLOCK_SIZE * ceil((str.size() + 1.0) / XTEA_BLOCK_SIZE);
@@ -111,7 +113,7 @@ void CryptoLog_XTEA_CBC::write(const string &str)
   free(out_buff);
 }
 
-string CryptoLog_XTEA_CBC::get_plain_text()
+string CryptoLog::XTEA_CBC::get_plain_text()
 {
   fflush(fp);
 
@@ -138,7 +140,7 @@ string CryptoLog_XTEA_CBC::get_plain_text()
   return plaintext;
 }
 
-string CryptoLog_XTEA_CBC::read()
+string CryptoLog::XTEA_CBC::read()
 {
   return this->get_plain_text();
 }

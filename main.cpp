@@ -16,21 +16,21 @@ int main()
                                 };
 
     /* Blowfish CBC mode 128 bit key */
-    CryptoLog_Blowfish_CBC log_bfcbc("bfcbc.log");
+    CryptoLog::Blowfish_CBC log_bfcbc("bfcbc.log");
     log_bfcbc.set_key(key, 128);
 
     log_bfcbc.write("The quick brown fox jumps over the lazy dog");
     cout << log_bfcbc.get_plain_text() << endl;
 
     /* Blowfish CFB mode 128 bit key */
-    CryptoLog_Blowfish_CFB log_bfcfb("bfcfb.log");
+    CryptoLog::Blowfish_CFB log_bfcfb("bfcfb.log");
     log_bfcfb.set_key(key, 128);
 
     log_bfcfb.write("The quick brown fox jumps over the lazy dog");
     cout << log_bfcfb.get_plain_text() << endl;
 
     /* XTEA CBC mode */
-    CryptoLog_XTEA_CBC log_xtea("xtea.log");
+    CryptoLog::XTEA_CBC log_xtea("xtea.log");
     log_xtea.set_key(key);
 
     log_xtea.write("The quick brown fox jumps over the lazy dog");
