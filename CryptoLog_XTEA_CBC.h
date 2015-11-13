@@ -31,6 +31,7 @@ class CryptoLog_XTEA_CBC : public CryptoLog {
     string filename;
     unsigned char iv[XTEA_BLOCK_SIZE];
     void init_iv();
+    FILE *fp;
 };
 
 CryptoLog_XTEA_CBC::CryptoLog_XTEA_CBC()
@@ -47,6 +48,7 @@ CryptoLog_XTEA_CBC::CryptoLog_XTEA_CBC(const string &filename)
 CryptoLog_XTEA_CBC::~CryptoLog_XTEA_CBC()
 {
   xtea_free(&ctx);
+  fclose(fp);
 }
 
 void CryptoLog_XTEA_CBC::init_iv()
@@ -80,6 +82,10 @@ void CryptoLog_XTEA_CBC::open(const string &filename)
 {
   this->filename = filename;
   init_iv();
+
+  fp = fopen(filename.c_str(), "ab+");
+  if (fp == NULL)
+    throw runtime_error("Could not open file: " + filename);
 }
 
 void CryptoLog_XTEA_CBC::set_key(const unsigned char key[XTEA_KEY_SIZE])
@@ -92,10 +98,6 @@ void CryptoLog_XTEA_CBC::write(const string &str)
   unsigned char *in_buff, *out_buff;
   size_t buff_size = XTEA_BLOCK_SIZE * ceil((str.size() + 1.0) / XTEA_BLOCK_SIZE);
 
-  FILE *fp = fopen(filename.c_str(), "ab");
-  if (fp == NULL)
-    throw runtime_error("Could not open file: " + filename);
-
   in_buff  = (unsigned char*) calloc(1, buff_size);
   out_buff = (unsigned char*) calloc(1, buff_size);
 
@@ -107,24 +109,21 @@ void CryptoLog_XTEA_CBC::write(const string &str)
 
   free(in_buff);
   free(out_buff);
-  fclose(fp);
 }
 
 string CryptoLog_XTEA_CBC::get_plain_text()
 {
+  fflush(fp);
+
   unsigned char *in_buff, *out_buff, first_iv[XTEA_BLOCK_SIZE];
   size_t buff_size = file_byte_size(filename) - XTEA_BLOCK_SIZE;
-
-  FILE *fp = fopen(filename.c_str(), "rb");
-  if (fp == NULL)
-    throw runtime_error("Could not open file: " + filename);
 
   in_buff  = (unsigned char*) malloc(buff_size);
   out_buff = (unsigned char*) malloc(buff_size);
 
+  rewind(fp);
   fread(first_iv, sizeof(unsigned char), XTEA_BLOCK_SIZE, fp);
   fread(in_buff, sizeof(unsigned char), buff_size, fp);
-  fclose(fp);
 
   xtea_crypt_cbc(&ctx, XTEA_DECRYPT, buff_size, first_iv, in_buff, out_buff);
 
