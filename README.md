@@ -9,8 +9,10 @@ cryptographic ciphers
 
 ## API
 ```c++
-// constructor that opens / creates a log file for writing
-CryptoLog(const string &filename);
+// constructors that open / create a log file for writing
+CryptoLog::XTEA_CBC(const string &filename);
+CryptoLog::Blowfish_CBC(const string &filename);
+CryptoLog::Blowfish_CFB(const string &filename);
 
 // opens / creates a log file; closing is automatic
 virtual void open(const string &filename);
@@ -38,7 +40,7 @@ const unsigned char key[] = { 0x01, 0x02, 0x03, 0x04,
                             };
 
 /* Blowfish CBC mode 128 bit key */
-CryptoLog_Blowfish_CBC log_bfcbc("bfcbc.log");
+CryptoLog::Blowfish_CBC log_bfcbc("bfcbc.log");
 log_bfcbc.set_key(key, 128);
 
 log_bfcbc.write("The quick brown fox jumps over the lazy dog");
