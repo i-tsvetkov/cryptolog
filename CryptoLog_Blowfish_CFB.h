@@ -102,20 +102,15 @@ void CryptoLog_Blowfish_CFB::init_iv_and_offset()
 
 void CryptoLog_Blowfish_CFB::write(const string &str)
 {
-  unsigned char *in_buff, *out_buff;
   size_t buff_size = str.size();
+  unsigned char *out_buff = (unsigned char*) malloc(buff_size);
 
-  in_buff  = (unsigned char*) calloc(1, buff_size);
-  out_buff = (unsigned char*) calloc(1, buff_size);
-
-  memcpy(in_buff, str.c_str(), str.size());
-
-  blowfish_crypt_cfb64(&ctx, BLOWFISH_ENCRYPT, buff_size, &iv_off, iv, in_buff, out_buff);
+  blowfish_crypt_cfb64(&ctx, BLOWFISH_ENCRYPT, buff_size, &iv_off, iv,
+                        (const unsigned char*) str.data(), out_buff);
 
   fseek(fp, 0, SEEK_END);
   fwrite(out_buff, sizeof(unsigned char), buff_size, fp);
 
-  free(in_buff);
   free(out_buff);
 }
 

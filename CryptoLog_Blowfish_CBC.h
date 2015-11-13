@@ -97,7 +97,7 @@ void CryptoLog_Blowfish_CBC::write(const string &str)
   size_t buff_size = BLOWFISH_BLOCKSIZE * ceil((str.size() + 1.0) / BLOWFISH_BLOCKSIZE);
 
   in_buff  = (unsigned char*) calloc(1, buff_size);
-  out_buff = (unsigned char*) calloc(1, buff_size);
+  out_buff = (unsigned char*) malloc(buff_size);
 
   memcpy(in_buff, str.c_str(), str.size());
 
