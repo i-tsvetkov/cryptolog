@@ -23,6 +23,7 @@ namespace CryptoLog {
       XTEA_CBC(const string &filename);
       ~XTEA_CBC();
       virtual void open(const string &filename);
+      virtual void close();
       void set_key(const unsigned char key[XTEA_KEY_SIZE]);
       virtual void write(const string &str);
       virtual string read();
@@ -39,6 +40,7 @@ namespace CryptoLog {
 CryptoLog::XTEA_CBC::XTEA_CBC()
 {
   xtea_init(&ctx);
+  fp = NULL;
 }
 
 CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename)
@@ -50,7 +52,16 @@ CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename)
 CryptoLog::XTEA_CBC::~XTEA_CBC()
 {
   xtea_free(&ctx);
+  this->close();
+}
+
+void CryptoLog::XTEA_CBC::close()
+{
+  if (fp == NULL)
+    return;
+
   fclose(fp);
+  fp = NULL;
 }
 
 void CryptoLog::XTEA_CBC::init_iv()
@@ -82,6 +93,7 @@ void CryptoLog::XTEA_CBC::init_iv()
 
 void CryptoLog::XTEA_CBC::open(const string &filename)
 {
+  this->close();
   this->filename = filename;
   init_iv();
 

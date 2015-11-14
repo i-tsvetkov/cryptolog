@@ -18,6 +18,7 @@ namespace CryptoLog {
       Blowfish_CFB(const string &filename);
       ~Blowfish_CFB();
       virtual void open(const string &filename);
+      virtual void close();
       void set_key(const unsigned char key[], unsigned int keylen);
       virtual void write(const string &str);
       virtual string read();
@@ -35,6 +36,7 @@ namespace CryptoLog {
 CryptoLog::Blowfish_CFB::Blowfish_CFB()
 {
   blowfish_init(&ctx);
+  fp = NULL;
 }
 
 CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename)
@@ -46,15 +48,24 @@ CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename)
 CryptoLog::Blowfish_CFB::~Blowfish_CFB()
 {
   blowfish_free(&ctx);
+  this->close();
+}
+
+void CryptoLog::Blowfish_CFB::close()
+{
+  if (fp == NULL)
+    return;
 
   fseek(fp, BLOWFISH_BLOCKSIZE, SEEK_SET);
   fwrite(iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
   fwrite(&iv_off, sizeof(size_t), 1, fp);
   fclose(fp);
+  fp = NULL;
 }
 
 void CryptoLog::Blowfish_CFB::open(const string &filename)
 {
+  this->close();
   this->filename = filename;
   init_iv_and_offset();
 
