@@ -41,6 +41,7 @@ CryptoLog::Blowfish_CBC::Blowfish_CBC()
 CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename)
 {
   blowfish_init(&ctx);
+  fp = NULL;
   this->open(filename);
 }
 

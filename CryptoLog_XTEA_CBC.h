@@ -46,6 +46,7 @@ CryptoLog::XTEA_CBC::XTEA_CBC()
 CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename)
 {
   xtea_init(&ctx);
+  fp = NULL;
   this->open(filename);
 }
 
