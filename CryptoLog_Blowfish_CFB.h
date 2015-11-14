@@ -57,8 +57,11 @@ void CryptoLog::Blowfish_CFB::close()
   if (fp == NULL)
     return;
 
+  unsigned char iv_buff[BLOWFISH_BLOCKSIZE];
+  blowfish_crypt_ecb(&ctx, BLOWFISH_ENCRYPT, iv, iv_buff);
+
   fseek(fp, BLOWFISH_BLOCKSIZE, SEEK_SET);
-  fwrite(iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+  fwrite(iv_buff, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
   fwrite(&iv_off, sizeof(size_t), 1, fp);
   fclose(fp);
   fp = NULL;
@@ -93,8 +96,14 @@ void CryptoLog::Blowfish_CFB::init_iv_and_offset()
     FILE *fp = fopen(filename.c_str(), "rb");
     if (fp == NULL)
       throw runtime_error("Could not open file: " + filename);
+
+    unsigned char iv_buff[BLOWFISH_BLOCKSIZE];
+
     fseek(fp, BLOWFISH_BLOCKSIZE, SEEK_SET);
-    fread(iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+
+    fread(iv_buff, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+    blowfish_crypt_ecb(&ctx, BLOWFISH_DECRYPT, iv_buff, iv);
+
     fread(&iv_off, sizeof(size_t), 1, fp);
     fclose(fp);
   }
