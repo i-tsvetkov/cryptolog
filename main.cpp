@@ -1,6 +1,7 @@
 #include <iostream>
 #include "CryptoLog_Blowfish_CBC.h"
 #include "CryptoLog_Blowfish_CFB.h"
+#include "CryptoLog_Blowfish_CTR.h"
 #include "CryptoLog_XTEA_CBC.h"
 using namespace std;
 
@@ -23,11 +24,16 @@ int main()
     cout << log_bfcbc.get_plain_text() << endl;
 
     /* Blowfish CFB mode 128 bit key */
-    CryptoLog::Blowfish_CFB log_bfcfb("bfcfb.log");
-    log_bfcfb.set_key(key, 128);
+    CryptoLog::Blowfish_CFB log_bfcfb("bfcfb.log", key, 128);
 
     log_bfcfb.write("The quick brown fox jumps over the lazy dog");
     cout << log_bfcfb.get_plain_text() << endl;
+
+    /* Blowfish CTR mode 128 bit key */
+    CryptoLog::Blowfish_CTR log_bfctr("bfctr.log", key, 128);
+
+    log_bfctr.write("The quick brown fox jumps over the lazy dog");
+    cout << log_bfctr.get_plain_text() << endl;
 
     /* XTEA CBC mode */
     CryptoLog::XTEA_CBC log_xtea("xtea.log");
