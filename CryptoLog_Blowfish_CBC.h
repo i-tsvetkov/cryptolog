@@ -29,21 +29,19 @@ namespace CryptoLog {
       string filename;
       unsigned char iv[BLOWFISH_BLOCKSIZE];
       void init_iv();
-      FILE *fp;
+      FILE *fp = NULL;
   };
 }
 
 CryptoLog::Blowfish_CBC::Blowfish_CBC()
 {
   blowfish_init(&ctx);
-  fp = NULL;
 }
 
 CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename)
 {
   blowfish_init(&ctx);
-  fp = NULL;
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename,
@@ -51,14 +49,13 @@ CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename,
                                       unsigned int keylen)
 {
   blowfish_init(&ctx);
-  fp = NULL;
   set_key(key, keylen);
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::Blowfish_CBC::~Blowfish_CBC()
 {
-  this->close();
+  close();
   blowfish_free(&ctx);
 }
 
@@ -73,7 +70,7 @@ void CryptoLog::Blowfish_CBC::close()
 
 void CryptoLog::Blowfish_CBC::open(const string &filename)
 {
-  this->close();
+  close();
   this->filename = filename;
   init_iv();
 
@@ -164,5 +161,5 @@ string CryptoLog::Blowfish_CBC::get_plain_text()
 
 string CryptoLog::Blowfish_CBC::read()
 {
-  return this->get_plain_text();
+  return get_plain_text();
 }

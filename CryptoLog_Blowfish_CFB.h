@@ -29,14 +29,13 @@ namespace CryptoLog {
       unsigned char iv[BLOWFISH_BLOCKSIZE];
       size_t iv_off;
       void init_iv_and_offset();
-      FILE *fp;
+      FILE *fp = NULL;
   };
 }
 
 CryptoLog::Blowfish_CFB::Blowfish_CFB()
 {
   blowfish_init(&ctx);
-  fp = NULL;
 }
 
 CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename,
@@ -44,14 +43,13 @@ CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename,
                                       unsigned int keylen)
 {
   blowfish_init(&ctx);
-  fp = NULL;
   set_key(key, keylen);
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::Blowfish_CFB::~Blowfish_CFB()
 {
-  this->close();
+  close();
   blowfish_free(&ctx);
 }
 
@@ -74,7 +72,7 @@ void CryptoLog::Blowfish_CFB::close()
 
 void CryptoLog::Blowfish_CFB::open(const string &filename)
 {
-  this->close();
+  close();
   this->filename = filename;
   init_iv_and_offset();
 
@@ -153,7 +151,7 @@ string CryptoLog::Blowfish_CFB::get_plain_text()
   size_t first_iv_off = 0;
 
   in_buff  = (unsigned char*) malloc(buff_size);
-  out_buff = (unsigned char*) malloc(buff_size);
+  out_buff = (unsigned char*) malloc(buff_size + 1);
 
   rewind(fp);
   fread(first_iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
@@ -162,10 +160,8 @@ string CryptoLog::Blowfish_CFB::get_plain_text()
 
   blowfish_crypt_cfb64(&ctx, BLOWFISH_DECRYPT, buff_size, &first_iv_off, first_iv, in_buff, out_buff);
 
-  string plaintext("");
-  for (int i = 0; i < buff_size; i++)
-    if (out_buff[i] != 0x00)
-      plaintext += (char) out_buff[i];
+  out_buff[buff_size] = '\0';
+  string plaintext(reinterpret_cast<char*>(out_buff));
 
   free(in_buff);
   free(out_buff);
@@ -175,5 +171,5 @@ string CryptoLog::Blowfish_CFB::get_plain_text()
 
 string CryptoLog::Blowfish_CFB::read()
 {
-  return this->get_plain_text();
+  return get_plain_text();
 }

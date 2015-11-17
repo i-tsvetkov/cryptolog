@@ -30,14 +30,13 @@ namespace CryptoLog {
       unsigned char stream_block[BLOWFISH_BLOCKSIZE];
       size_t nc_off;
       void init_nc_and_offset();
-      FILE *fp;
+      FILE *fp = NULL;
   };
 }
 
 CryptoLog::Blowfish_CTR::Blowfish_CTR()
 {
   blowfish_init(&ctx);
-  fp = NULL;
 }
 
 CryptoLog::Blowfish_CTR::Blowfish_CTR(const string &filename,
@@ -45,14 +44,13 @@ CryptoLog::Blowfish_CTR::Blowfish_CTR(const string &filename,
                                       unsigned int keylen)
 {
   blowfish_init(&ctx);
-  fp = NULL;
   set_key(key, keylen);
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::Blowfish_CTR::~Blowfish_CTR()
 {
-  this->close();
+  close();
   blowfish_free(&ctx);
 }
 
@@ -75,7 +73,7 @@ void CryptoLog::Blowfish_CTR::close()
 
 void CryptoLog::Blowfish_CTR::open(const string &filename)
 {
-  this->close();
+  close();
   this->filename = filename;
   init_nc_and_offset();
 
@@ -165,7 +163,7 @@ string CryptoLog::Blowfish_CTR::get_plain_text()
   size_t first_nc_off = 0;
 
   in_buff  = (unsigned char*) malloc(buff_size);
-  out_buff = (unsigned char*) malloc(buff_size);
+  out_buff = (unsigned char*) malloc(buff_size + 1);
   memset(first_nonce_counter, 0, BLOWFISH_BLOCKSIZE);
 
   rewind(fp);
@@ -176,10 +174,8 @@ string CryptoLog::Blowfish_CTR::get_plain_text()
   blowfish_crypt_ctr(&ctx, buff_size, &first_nc_off, first_nonce_counter, first_stream_block,
                       in_buff, out_buff);
 
-  string plaintext("");
-  for (int i = 0; i < buff_size; i++)
-    if (out_buff[i] != 0x00)
-      plaintext += (char) out_buff[i];
+  out_buff[buff_size] = '\0';
+  string plaintext(reinterpret_cast<char*>(out_buff));
 
   free(in_buff);
   free(out_buff);
@@ -189,5 +185,5 @@ string CryptoLog::Blowfish_CTR::get_plain_text()
 
 string CryptoLog::Blowfish_CTR::read()
 {
-  return this->get_plain_text();
+  return get_plain_text();
 }

@@ -34,35 +34,32 @@ namespace CryptoLog {
       string filename;
       unsigned char iv[XTEA_BLOCK_SIZE];
       void init_iv();
-      FILE *fp;
+      FILE *fp = NULL;
   };
 }
 
 CryptoLog::XTEA_CBC::XTEA_CBC()
 {
   xtea_init(&ctx);
-  fp = NULL;
 }
 
 CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename)
 {
   xtea_init(&ctx);
-  fp = NULL;
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename,
                               const unsigned char key[XTEA_KEY_SIZE])
 {
   xtea_init(&ctx);
-  fp = NULL;
   set_key(key);
-  this->open(filename);
+  open(filename);
 }
 
 CryptoLog::XTEA_CBC::~XTEA_CBC()
 {
-  this->close();
+  close();
   xtea_free(&ctx);
 }
 
@@ -104,7 +101,7 @@ void CryptoLog::XTEA_CBC::init_iv()
 
 void CryptoLog::XTEA_CBC::open(const string &filename)
 {
-  this->close();
+  close();
   this->filename = filename;
   init_iv();
 
@@ -165,6 +162,6 @@ string CryptoLog::XTEA_CBC::get_plain_text()
 
 string CryptoLog::XTEA_CBC::read()
 {
-  return this->get_plain_text();
+  return get_plain_text();
 }
 
