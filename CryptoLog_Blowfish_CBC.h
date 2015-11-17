@@ -16,6 +16,7 @@ namespace CryptoLog {
     public:
       Blowfish_CBC();
       Blowfish_CBC(const string &filename);
+      Blowfish_CBC(const string &filename, const unsigned char key[], unsigned int keylen);
       ~Blowfish_CBC();
       virtual void open(const string &filename);
       virtual void close();
@@ -45,10 +46,20 @@ CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename)
   this->open(filename);
 }
 
+CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename,
+                                      const unsigned char key[],
+                                      unsigned int keylen)
+{
+  blowfish_init(&ctx);
+  fp = NULL;
+  set_key(key, keylen);
+  this->open(filename);
+}
+
 CryptoLog::Blowfish_CBC::~Blowfish_CBC()
 {
-  blowfish_free(&ctx);
   this->close();
+  blowfish_free(&ctx);
 }
 
 void CryptoLog::Blowfish_CBC::close()

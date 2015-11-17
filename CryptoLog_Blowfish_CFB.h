@@ -15,7 +15,7 @@ namespace CryptoLog {
   class Blowfish_CFB : public CryptoLog {
     public:
       Blowfish_CFB();
-      Blowfish_CFB(const string &filename);
+      Blowfish_CFB(const string &filename, const unsigned char key[], unsigned int keylen);
       ~Blowfish_CFB();
       virtual void open(const string &filename);
       virtual void close();
@@ -39,10 +39,13 @@ CryptoLog::Blowfish_CFB::Blowfish_CFB()
   fp = NULL;
 }
 
-CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename)
+CryptoLog::Blowfish_CFB::Blowfish_CFB(const string &filename,
+                                      const unsigned char key[],
+                                      unsigned int keylen)
 {
   blowfish_init(&ctx);
   fp = NULL;
+  set_key(key, keylen);
   this->open(filename);
 }
 

@@ -15,7 +15,7 @@ namespace CryptoLog {
   class Blowfish_CTR : public CryptoLog {
     public:
       Blowfish_CTR();
-      Blowfish_CTR(const string &filename);
+      Blowfish_CTR(const string &filename, const unsigned char key[], unsigned int keylen);
       ~Blowfish_CTR();
       virtual void open(const string &filename);
       virtual void close();
@@ -40,10 +40,13 @@ CryptoLog::Blowfish_CTR::Blowfish_CTR()
   fp = NULL;
 }
 
-CryptoLog::Blowfish_CTR::Blowfish_CTR(const string &filename)
+CryptoLog::Blowfish_CTR::Blowfish_CTR(const string &filename,
+                                      const unsigned char key[],
+                                      unsigned int keylen)
 {
   blowfish_init(&ctx);
   fp = NULL;
+  set_key(key, keylen);
   this->open(filename);
 }
 
