@@ -49,8 +49,8 @@ CryptoLog::Blowfish_CTR::Blowfish_CTR(const string &filename)
 
 CryptoLog::Blowfish_CTR::~Blowfish_CTR()
 {
-  blowfish_free(&ctx);
   this->close();
+  blowfish_free(&ctx);
 }
 
 void CryptoLog::Blowfish_CTR::close()
@@ -58,13 +58,14 @@ void CryptoLog::Blowfish_CTR::close()
   if (fp == NULL)
     return;
 
-  unsigned char stream_block_buff[BLOWFISH_BLOCKSIZE];
-  blowfish_crypt_ecb(&ctx, BLOWFISH_ENCRYPT, stream_block, stream_block_buff);
+  blowfish_crypt_ecb(&ctx, BLOWFISH_ENCRYPT, stream_block, stream_block);
 
   fseek(fp, BLOWFISH_BLOCKSIZE / 2, SEEK_SET);
+
   fwrite(nonce_counter, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
-  fwrite(stream_block_buff, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+  fwrite(stream_block, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
   fwrite(&nc_off, sizeof(size_t), 1, fp);
+
   fclose(fp);
   fp = NULL;
 }
@@ -101,14 +102,12 @@ void CryptoLog::Blowfish_CTR::init_nc_and_offset()
     if (fp == NULL)
       throw runtime_error("Could not open file: " + filename);
 
-    unsigned char stream_block_buff[BLOWFISH_BLOCKSIZE];
-
     fseek(fp, BLOWFISH_BLOCKSIZE / 2, SEEK_SET);
 
     fread(nonce_counter, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
-    fread(stream_block_buff, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+    fread(stream_block, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
 
-    blowfish_crypt_ecb(&ctx, BLOWFISH_DECRYPT, stream_block_buff, stream_block);
+    blowfish_crypt_ecb(&ctx, BLOWFISH_DECRYPT, stream_block, stream_block);
 
     fread(&nc_off, sizeof(size_t), 1, fp);
 
