@@ -57,6 +57,7 @@ void CryptoLog::Blowfish_CFB::close()
   if (fp == NULL)
     return;
 
+  random_data(iv, iv_off);
   blowfish_crypt_ecb(&ctx, BLOWFISH_ENCRYPT, iv, iv);
 
   fseek(fp, BLOWFISH_BLOCKSIZE, SEEK_SET);
@@ -101,10 +102,13 @@ void CryptoLog::Blowfish_CFB::init_iv_and_offset()
     fseek(fp, BLOWFISH_BLOCKSIZE, SEEK_SET);
 
     fread(iv, sizeof(unsigned char), BLOWFISH_BLOCKSIZE, fp);
+    fread(&iv_off, sizeof(size_t), 1, fp);
 
     blowfish_crypt_ecb(&ctx, BLOWFISH_DECRYPT, iv, iv);
 
-    fread(&iv_off, sizeof(size_t), 1, fp);
+    fseek(fp, -iv_off, SEEK_END);
+    fread(iv, sizeof(unsigned char), iv_off, fp);
+
     fclose(fp);
   }
   else
