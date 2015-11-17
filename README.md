@@ -6,16 +6,23 @@ cryptographic ciphers
   * XTEA / CBC
   * Blowfish / CBC
   * Blowfish / CFB
+  * Blowfish / CTR
 
 ## API
 ```c++
 // constructors that open / create a log file for writing
 CryptoLog::XTEA_CBC(const string &filename);
+CryptoLog::XTEA_CBC(const string &filename, const unsigned char key[XTEA_KEY_SIZE]);
 CryptoLog::Blowfish_CBC(const string &filename);
-CryptoLog::Blowfish_CFB(const string &filename);
+CryptoLog::Blowfish_CBC(const string &filename, const unsigned char key[], unsigned int keylen);
+CryptoLog::Blowfish_CFB(const string &filename, const unsigned char key[], unsigned int keylen);
+CryptoLog::Blowfish_CTR(const string &filename, const unsigned char key[], unsigned int keylen);
 
 // opens / creates a log file; closing is automatic
 virtual void open(const string &filename);
+
+// closes the log file; calling her is not necessary
+virtual void close();
 
 // sets the encryption key and its length
 void set_key(const unsigned char key[], unsigned int keylen);
