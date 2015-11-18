@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 #include "CryptoLog.h"
 #include "FileUtils.h"
 #include "Random.h"
@@ -17,6 +18,7 @@ namespace CryptoLog {
       Blowfish_CBC();
       Blowfish_CBC(const string &filename);
       Blowfish_CBC(const string &filename, const unsigned char key[], unsigned int keylen);
+      Blowfish_CBC(const string &filename, const vector<unsigned char> &key);
       ~Blowfish_CBC();
       virtual void open(const string &filename);
       virtual void close();
@@ -50,6 +52,14 @@ CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename,
 {
   blowfish_init(&ctx);
   set_key(key, keylen);
+  open(filename);
+}
+
+CryptoLog::Blowfish_CBC::Blowfish_CBC(const string &filename,
+                                      const vector<unsigned char> &key)
+{
+  blowfish_init(&ctx);
+  set_key(key.data(), key.size() * 8);
   open(filename);
 }
 

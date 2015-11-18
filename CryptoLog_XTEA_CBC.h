@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 #include "CryptoLog.h"
 #include "FileUtils.h"
 #include "Random.h"
@@ -22,6 +23,7 @@ namespace CryptoLog {
       XTEA_CBC();
       XTEA_CBC(const string &filename);
       XTEA_CBC(const string &filename, const unsigned char key[XTEA_KEY_SIZE]);
+      XTEA_CBC(const string &filename, const vector<unsigned char> &key);
       ~XTEA_CBC();
       virtual void open(const string &filename);
       virtual void close();
@@ -54,6 +56,14 @@ CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename,
 {
   xtea_init(&ctx);
   set_key(key);
+  open(filename);
+}
+
+CryptoLog::XTEA_CBC::XTEA_CBC(const string &filename,
+                              const vector<unsigned char> &key)
+{
+  xtea_init(&ctx);
+  set_key(key.data());
   open(filename);
 }
 
