@@ -1,8 +1,8 @@
 #include <iostream>
-#include "CryptoLog_Blowfish_CBC.h"
-#include "CryptoLog_Blowfish_CFB.h"
-#include "CryptoLog_Blowfish_CTR.h"
-#include "CryptoLog_XTEA_CBC.h"
+#include "CryptoLog/Blowfish_CBC.h"
+#include "CryptoLog/Blowfish_CFB.h"
+#include "CryptoLog/Blowfish_CTR.h"
+#include "CryptoLog/XTEA_CBC.h"
 using namespace std;
 
 int main()
