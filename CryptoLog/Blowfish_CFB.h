@@ -22,6 +22,7 @@ namespace CryptoLog {
       virtual void open(const string &filename);
       virtual void close();
       void set_key(const unsigned char key[], unsigned int keylen);
+      void set_key(const vector<unsigned char> &key);
       virtual void write(const string &str);
       virtual string read();
       virtual string get_plain_text();
@@ -97,6 +98,11 @@ void CryptoLog::Blowfish_CFB::set_key(const unsigned char key[], unsigned int ke
     blowfish_setkey(&ctx, key, keylen);
   else
     throw runtime_error("Invalid key length");
+}
+
+void CryptoLog::Blowfish_CFB::set_key(const vector<unsigned char> &key)
+{
+  set_key(key.data(), key.size() * 8);
 }
 
 void CryptoLog::Blowfish_CFB::init_iv_and_offset()

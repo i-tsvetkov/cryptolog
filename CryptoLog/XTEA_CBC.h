@@ -28,6 +28,7 @@ namespace CryptoLog {
       virtual void open(const string &filename);
       virtual void close();
       void set_key(const unsigned char key[XTEA_KEY_SIZE]);
+      void set_key(const vector<unsigned char> &key);
       virtual void write(const string &str);
       virtual string read();
       virtual string get_plain_text();
@@ -123,6 +124,11 @@ void CryptoLog::XTEA_CBC::open(const string &filename)
 void CryptoLog::XTEA_CBC::set_key(const unsigned char key[XTEA_KEY_SIZE])
 {
   xtea_setup(&ctx, key);
+}
+
+void CryptoLog::XTEA_CBC::set_key(const vector<unsigned char> &key)
+{
+  set_key(key.data());
 }
 
 void CryptoLog::XTEA_CBC::write(const string &str)
