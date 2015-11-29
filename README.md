@@ -33,6 +33,7 @@ virtual void close();
 
 // sets the encryption key and its length
 void set_key(const unsigned char key[], unsigned int keylen);
+void set_key(const vector<unsigned char> &key);
 
 // writes string to the file
 virtual void write(const string &str);
