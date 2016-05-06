@@ -26,6 +26,7 @@ namespace CryptoLog {
       virtual void write(const string &str);
       virtual string read();
       virtual string get_plain_text();
+      virtual CryptoLog& operator<<(const string &str);
     private:
       blowfish_context ctx;
       string filename;
@@ -189,3 +190,10 @@ string CryptoLog::Blowfish_CFB::read()
 {
   return get_plain_text();
 }
+
+CryptoLog::CryptoLog& CryptoLog::Blowfish_CFB::operator<<(const string &str)
+{
+  write(str);
+  return *this;
+}
+

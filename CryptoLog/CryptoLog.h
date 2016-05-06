@@ -12,6 +12,7 @@ namespace CryptoLog {
       virtual void write(const string &str) = 0;
       virtual string read() = 0;
       virtual string get_plain_text(void) = 0;
+      virtual CryptoLog& operator<<(const string &str) = 0;
   };
 }
 
